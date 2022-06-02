@@ -53,7 +53,7 @@ public class StepTracker {
 
             int avgSteps = 0;
             for (int i = 0; i < monthToData[month].days.length; i++) {
-                avgSteps = monthToData[month].days[i] / 30;
+                avgSteps += monthToData[month].days[i] / 30;
             }
             System.out.println("Среднее количество шагов: " + avgSteps);
 
