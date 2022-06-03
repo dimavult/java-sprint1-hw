@@ -21,7 +21,7 @@ public class StepTracker {
 
     Scanner scanner = new Scanner(System.in);
 
-    MonthData[] monthToData;
+    private MonthData[] monthToData;
 
     public StepTracker() {
         monthToData = new MonthData[12];
