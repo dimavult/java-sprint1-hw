@@ -4,6 +4,7 @@ public class StepTracker {
     private int stepsGoal = 10000;
     private int stepsSum;
 
+
     private static final String chooseMonth = "0 - Январь," +
             " 1 - Февраль," +
             " 2 - Март," +
@@ -41,21 +42,29 @@ public class StepTracker {
     }
 
     public void saveSteps() {
-        try {
             System.out.println("Выберите месяц: " + chooseMonth);
             int month = scanner.nextInt();
+            while (month < 0 || month > 11) {
+                System.out.println("Неправильно указан месяц\nВведите значение от 0 до 11.");
+                month = scanner.nextInt();
+            }
+
             System.out.println("Выберите день:");
             int day = scanner.nextInt();
+            while (day < 1 || day > 30){
+                System.out.println("Неправильно указан день\nВведите значение от 1 до 30.");
+                day = scanner.nextInt();
+            }
+
             System.out.println("Укажите количество шагов:");
             int steps = scanner.nextInt();
-            if (steps >= 0) {
-                monthToData[month].days[day - 1] = steps;
-            } else System.out.println("Количество шагов не может быть отрицательным.");
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Неверно выбран день или месяц:\nМесяц: 0-11\nДень: 1-30");
-            saveSteps();
+            while (steps < 0) {
+                System.out.println("Количество шагов не может быть отрицательным. Введите положительное число или 0.");
+                steps = scanner.nextInt();
+            }
+            monthToData[month].days[day - 1] = steps;
         }
-    }
+
 
 
     public void printStepsPerDay(int month) {
@@ -79,7 +88,7 @@ public class StepTracker {
         int maxSteps = 0;
         for (int i = 0; i < monthToData[month].days.length; i++) {
             if (monthToData[month].days[i] > maxSteps) {
-                maxSteps += monthToData[month].days[i];
+                maxSteps = monthToData[month].days[i];
             }
         }
         System.out.println("Максимальное количество шагов: " + maxSteps);
@@ -93,36 +102,39 @@ public class StepTracker {
         System.out.println("Среднее количество шагов: " + avgSteps);
     }
 
-    public void findBestStreak(int month) {
+    public void findBestStreak(int month) { //Вернуться, доделать
         int bestStreak = 0;
+        int currentStreak = 0;
         for (int i = 0; i < monthToData[month].days.length; i++) {
             if (monthToData[month].days[i] >= stepsGoal) {
-                bestStreak++;
+                currentStreak++;
+            } else if (monthToData[month].days[i] < stepsGoal && currentStreak > bestStreak) {
+                bestStreak = currentStreak;
+                currentStreak = 0;
             }
         }
-        System.out.println("Лучшая серия - " + bestStreak);
+        System.out.println("Лучшая серия (в днях) - " + bestStreak);
     }
 
     public void printMonthStat() {
-        try {
-            System.out.println("За какой месяц хотите посмотреть Ваши достижения? " + chooseMonth);
-            int month = scanner.nextInt();
-            printStepsPerDay(month); // Daily steps statistics
-            findMonthStepsSum(month); // Total steps per month
-            findMaxSteps(month); // Max steps per day
-            findAverageSteps(month); // Average number of steps per month
-            double distanceCovered = converter.stepsConvert(stepsSum);
-            System.out.println("Пройденная дистанция за месяц в км: " + distanceCovered);
-
-            double burnedCalories = converter.caloriesConvert(stepsSum);
-            System.out.println("Количество сожженных килокалорий: " + burnedCalories);
-
-            findBestStreak(month);
-
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Неверно выбран день или месяц:\nМесяц: 0-11");
-            printMonthStat();
+        System.out.println("За какой месяц хотите посмотреть Ваши достижения? " + chooseMonth);
+        int month = scanner.nextInt();
+        while (month < 0 || month > 11) {
+            System.out.println("Неправильно указан месяц\nnВведите значение от 0 до 11.");
+            month = scanner.nextInt();
         }
+
+        printStepsPerDay(month); // Daily steps statistics
+        findMonthStepsSum(month); // Total steps per month
+        findMaxSteps(month); // Max steps per day
+        findAverageSteps(month); // Average number of steps per month
+        double distanceCovered = converter.stepsConvert(stepsSum);
+        System.out.println("Пройденная дистанция за месяц в км: " + distanceCovered);
+
+        double burnedCalories = converter.caloriesConvert(stepsSum);
+        System.out.println("Количество сожженных килокалорий: " + burnedCalories);
+
+        findBestStreak(month);
     }
 
     public void changeStepGoal() {
@@ -133,6 +145,7 @@ public class StepTracker {
         } else System.out.println("Количество шагов до цели не может быть отрицательным.");
     }
 }
+
 
 
 
